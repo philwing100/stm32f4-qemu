@@ -6,9 +6,26 @@ MEMORY
 
 SECTIONS
 {
-  .text : { KEEP(*(.isr_vector)); *(.text*); *(.rodata*); } > FLASH
-  .data : AT (ADDR(.text) + SIZEOF(.text)) { *(.data*); } > RAM AT > FLASH
-  .bss : { *(.bss*); *(COMMON); __bss_end = .; } > RAM
+  .text :
+  {
+    KEEP(*(.isr_vector))
+    *(.text*)
+    *(.rodata*)
+  } > FLASH
+
+  .data : AT (ADDR(.text) + SIZEOF(.text))
+  {
+    *(.data*)
+  } > RAM AT > FLASH
+
+  .bss :
+  {
+    *(.bss*)
+    *(COMMON)
+    __bss_end = .;
+  } > RAM
+
+
   __text_start = ADDR(.text);
   __text_end = ADDR(.text) + SIZEOF(.text);
   __data_start = ADDR(.data);
