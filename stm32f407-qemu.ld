@@ -1,7 +1,7 @@
 MEMORY
 {
-  FLASH (rx)      : ORIGIN = 0x00000000, LENGTH = 1024K
-  RAM (rwx)       : ORIGIN = 0x20000000, LENGTH = 192K
+  FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 1024K
+  RAM (rwx)       : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
 SECTIONS
@@ -9,17 +9,17 @@ SECTIONS
   .text :
   {
     KEEP(*(.isr_vector))
-    *(.text*)
     *(.rodata*)
   } > FLASH
 
-  .data : AT (ADDR(.text) + SIZEOF(.text))
+  .data :
   {
     *(.data*)
   } > RAM AT > FLASH
 
   .bss :
   {
+    __bss_start = .;
     *(.bss*)
     *(COMMON)
     __bss_end = .;
@@ -31,5 +31,4 @@ SECTIONS
   __data_start = ADDR(.data);
   __data_end = ADDR(.data) + SIZEOF(.data);
   __data_load = LOADADDR(.data);
-  __bss_start = ADDR(.bss);
 }

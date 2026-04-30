@@ -1,46 +1,19 @@
-#include "FreeRTOS.h"
-#include "task.h"
-#include <stdio.h>
-
-#define UART0_BASE 0x101f1000
-volatile unsigned int *uart = (volatile unsigned int *)UART0_BASE;
-
-void uart_putchar(char c) { uart[0] = (unsigned int)c; }
-void uart_puts(const char *str) { while (*str) uart_putchar(*str++); }
-int putchar(int c) { uart_putchar((char)c); return c; }
-
-static void task_hello(void *pvParameters) {
-    (void)pvParameters;
-    while (1) {
-        uart_puts("Task1: Hello World!\r\n");
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-}
-
-static void task_rtos(void *pvParameters) {
-    (void)pvParameters;
-    while (1) {
-        uart_puts("Task2: FreeRTOS Running!\r\n");
-        vTaskDelay(pdMS_TO_TICKS(1500));
-    }
-}
+#include "uart.h"
+#include "systick.h"
 
 int main(void) {
-    uart_puts("\n====================================\n");
-    uart_puts("  STM32F4 + FreeRTOS on QEMU ARM\n");
-    uart_puts("====================================\n\n");
-    uart_puts("Starting FreeRTOS scheduler...\n\n");
+    uart_init(115200);
+    uart_puts("=== STM32F4 Bare Metal Boot ===\r\n");
+    uart_puts("UART initialized at 115200 baud\r\n");
 
-    xTaskCreate(task_hello, "Hello", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
-    xTaskCreate(task_rtos,  "RTOS",  configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+    systick_init(168000000U);
+    uart_puts("SysTick timer running (1ms ticks)\r\n");
 
-    vTaskStartScheduler();
+    for (int i = 0; i < 10; ++i) {
+        delay_ms(1000);
+        uart_puts("Tick...\r\n");
+    }
 
-    uart_puts("ERROR: Scheduler failed!\n");
-    while (1);
+    while (1) { }
     return 0;
 }
-
-void vApplicationIdleHook(void) {}
-void vApplicationMallocFailedHook(void) { while (1); }
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) { while (1); }

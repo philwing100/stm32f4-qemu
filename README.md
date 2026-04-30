@@ -1,2 +1,2 @@
 # stm32f4-qemu
-Mini rtos with concurrent processes
+QEMU Bare Metal Project on top of FREE_RTOS
