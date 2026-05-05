@@ -13,6 +13,7 @@ int _lseek(int file, int ptr, int dir) { return 0; }
 int _read(int file, char *ptr, int len) { return 0; }
 int _getpid(void) { return 1; }
 int _kill(int pid, int sig) { return -1; }
+void _exit(int status) { (void)status; while (1); }
 
 static char heap[4096];
 static char *heap_ptr = heap;

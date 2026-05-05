@@ -15,9 +15,9 @@ void SVC_Handler(void)        __attribute__((weak));
 void DebugMon_Handler(void)   __attribute__((weak, alias("Default_Handler")));
 void PendSV_Handler(void)  __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void USART2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 void Default_Handler(void) { while (1); }
-void SVC_Handler(void)     { asm("bx lr"); }
 
 #define IRQ_DEF Default_Handler
 
@@ -76,7 +76,7 @@ void (*const g_pfnVectors[])(void) = {
     IRQ_DEF, /* 35 SPI1 */
     IRQ_DEF, /* 36 SPI2 */
     IRQ_DEF, /* 37 USART1 */
-    IRQ_DEF, /* 38 USART2 */
+    USART2_IRQHandler, /* 38 USART2 */
     IRQ_DEF, /* 39 USART3 */
     IRQ_DEF, /* 40 EXTI15_10 */
     IRQ_DEF, /* 41 RTC_Alarm */

@@ -62,17 +62,29 @@ typedef struct { volatile uint32_t CTRL, LOAD, VAL, CALIB; } SysTick_TypeDef;
 #define SYSTICK  ((SysTick_TypeDef*) 0xE000E010)
 //Bit-mask macros:
 
-#define RCC_AHB1ENR_GPIOAEN   (1U << 0)
-#define RCC_APB1ENR_USART2EN  (1U << 17)
-#define USART_SR_TXE          (1U << 7)
-#define USART_SR_RXNE         (1U << 5)
-#define USART_CR1_UE          (1U << 13)
-#define USART_CR1_TE          (1U << 3)
-#define USART_CR1_RE          (1U << 2)
-#define SYSTICK_CTRL_ENABLE   (1U << 0)
-#define SYSTICK_CTRL_TICKINT  (1U << 1)
+#define RCC_AHB1ENR_GPIOAEN    (1U << 0)
+#define RCC_APB1ENR_USART2EN    (1U << 17)
+
+#define USART_SR_TXE           (1U << 7)
+#define USART_SR_RXNE          (1U << 5)
+#define USART_CR1_UE           (1U << 13)
+#define USART_CR1_TE           (1U << 3)
+#define USART_CR1_RE           (1U << 2)
+#define USART_CR1_RXNEIE       (1U << 5)
+#define SYSTICK_CTRL_ENABLE    (1U << 0)
+#define SYSTICK_CTRL_TICKINT   (1U << 1)
 #define SYSTICK_CTRL_CLKSOURCE (1U << 2)
 
+
+/*NVIC Wrappers*/
+
+#define USART2_IRQn  38   // from your vector table — count the IRQ entries in startup.c
+
+#define NVIC_EnableIRQ(irq)           \
+    (NVIC->ISER[(irq) >> 5] |= (1U << ((irq) & 0x1F)))
+
+#define NVIC_SetPriority(irq, pri)    \
+    (NVIC->IP[(irq)] = (uint8_t)((pri) << 4))
 
 /*Test (compile-only):
 

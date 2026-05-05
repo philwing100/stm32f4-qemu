@@ -9,9 +9,11 @@ void systick_init(uint32_t cpu_hz) {
     SYSTICK->CTRL = SYSTICK_CTRL_CLKSOURCE | SYSTICK_CTRL_TICKINT | SYSTICK_CTRL_ENABLE;
 }
 
+#ifdef BARE_METAL
 void SysTick_Handler(void) {
     ++g_ticks;
 }
+#endif
 
 uint32_t systick_now(void) {
     return g_ticks;
