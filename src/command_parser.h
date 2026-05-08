@@ -24,6 +24,6 @@ typedef struct {
     uint32_t stack_size;
 } Command;
 
-int parse_command(const char *line, Command *cmd);
+void parse_command(const char *line, Command *cmd);
 
 #endif

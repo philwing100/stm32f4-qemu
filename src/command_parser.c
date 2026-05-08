@@ -1,8 +1,9 @@
 #include "command_parser.h"
+#include "task_manager.h"
 
-int parse_command(const char *line, Command *cmd){
+void parse_command(const char *line, Command *cmd){
     if(!line || !cmd){
-        return -1;
+        return;
     }
 
     //Need to split *line by spaces
@@ -11,26 +12,27 @@ int parse_command(const char *line, Command *cmd){
     sscanf(line, "%31s %31s %lu %lu", verb, name, &priority, &stack_size);
 
     strncpy(cmd->name, name, sizeof(cmd->name) - 1);
-    cmd->priority = priority;
-    cmd->stack_size = stack_size;
 
     if (strcmp(verb, "TASK_CREATE") == 0) {
-    cmd->type = CMD_TASK_CREATE;
+        task_manager_create(name, priority, stack_size);
     } else if (strcmp(verb, "TASK_LIST") == 0) {
-        cmd->type = CMD_TASK_LIST;
+        task_manager_list();
     } else if (strcmp(verb, "TASK_SUSPEND") == 0) {
-        cmd->type = CMD_TASK_SUSPEND;
+        //todo
     } else if (strcmp(verb, "TASK_RESUME") == 0) {
-        cmd->type = CMD_TASK_RESUME;
+        //todo
     } else if (strcmp(verb, "TASK_DELETE") == 0) {
-        cmd->type = CMD_TASK_DELETE;
+        task_manager_delete(name);
     } else if (strcmp(verb, "HELP") == 0) {
-        cmd->type = CMD_HELP;
+        uart_puts("=== Commands ===\r\n");
+        uart_puts("TASK_CREATE <name> <priority> [stack]\r\n");
+        uart_puts("TASK_LIST\r\n");
+        uart_puts("TASK_SUSPEND <name>\r\n");
+        uart_puts("TASK_RESUME <name>\r\n");
+        uart_puts("TASK_DELETE <name>\r\n");
+        uart_puts("HELP\r\n");
     } else {
-        cmd->type = CMD_UNKNOWN;
-        return -1;
+        uart_puts("Unknown command\r\n");
     }
-
-    return 0;
-
+    uart_puts("> ");
 }

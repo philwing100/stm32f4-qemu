@@ -62,9 +62,8 @@ void task_manager_list(void){
 }
 
 /*
+Need to make task_manager_suspend(name)
+Need to make task_manager_resume()
 
-task_manager_create(): Call xTaskCreate(), store in local array
-task_manager_delete(): Find task by name, call vTaskDelete()
-task_manager_list(): Print all tracked tasks (name, priority, handle)
-task_manager_get_handle(): Return handle for a task name
+
 */

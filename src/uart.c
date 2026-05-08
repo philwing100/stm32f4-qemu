@@ -23,10 +23,10 @@ void uart_init(uint32_t baud) {
     USART2->BRR = UART_PCLK_HZ / baud;
     USART2->CR1 = USART_CR1_UE | USART_CR1_TE | USART_CR1_RE;
 
-    USART2->CR1 |= USART_CR1_RXNEIE;
+    //USART2->CR1 |= USART_CR1_RXNEIE;
     // Set NVIC priority for USART2_IRQ (usually priority 5+)
-    NVIC_SetPriority(USART2_IRQn, 5);
-    NVIC_EnableIRQ(USART2_IRQn);
+   // NVIC_SetPriority(USART2_IRQn, 5);
+    //NVIC_EnableIRQ(USART2_IRQn);
 }
 
 void uart_putchar(char c) {
@@ -52,8 +52,8 @@ void USART2_IRQHandler(void) {
 }
 
 int uart_getchar_nb(void) {
-    if (uart_rx_head == uart_rx_tail) return -1;  // empty
-    uint8_t c = uart_rx_buffer[uart_rx_tail];
-    uart_rx_tail = (uart_rx_tail + 1) % UART_RX_BUFFER_SIZE;
-    return (int)c;
+    if (USART2->SR & USART_SR_RXNE) {
+        return (int)(USART2->DR & 0xFF);
+    }
+    return -1;
 }
